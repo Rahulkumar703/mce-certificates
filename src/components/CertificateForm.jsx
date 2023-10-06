@@ -12,19 +12,37 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from "react-hook-form"
 import { Input } from "./ui/input";
 import * as  z from "zod";
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import { FormContext } from "@/context/Context";
 import { ArrowDownToLine, Loader, Wand2 } from "lucide-react";
+import { toast } from "sonner";
+import excelTOJson from "@/lib/excelToJson";
+import { Label } from "./ui/label";
+import FileSaver from "file-saver";
+import { genId } from "@/lib/certificates";
 
 const CertificateForm = ({ ...props }) => {
 
     const { formState, setFormState } = useContext(FormContext);
+    const [file, setFile] = useState(null);
+
+    const fileInputRef = useRef(null)
+
+    const handleFileChange = (event) => {
+
+        const selectedFile = event.target.files[0];
+        setFile(selectedFile);
+
+    }
 
     const formSchema = z.object({
-        name: z.string().min(3, {
-            message: "Name must be at least 3 characters.",
-        }),
-    })
+        name: z
+            .string()
+            .min(4, "Please enter a valid value")
+            .optional()
+            .or(z.literal('')),
+    });
+
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -34,10 +52,34 @@ const CertificateForm = ({ ...props }) => {
     });
 
     const onSubmit = (formData) => {
-        if (formData?.name !== formState?.certificateData?.name)
-            setFormState(prev => ({ ...prev, certificateData: formData }));
 
+        const { name } = formData;
+        const id = genId();
+
+
+        if (!name && !file)
+            return toast.error('Either Enter a name or upload excel file to generate certificate', { message: 'validation' })
+
+        if (name) {
+            setFormState(prev => ({ ...prev, certificateData: [{ ...formData, id }] }));
+        }
+        else if (file) {
+            try {
+                const FILETYPES = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+
+                excelTOJson(file, FILETYPES, (data) => {
+                    setFormState(prev => ({ ...prev, certificateData: data }));
+                });
+
+            } catch (error) {
+                toast.error(error.message, { message: 'excelToJson' });
+            }
+        }
+
+        fileInputRef.current.value = "";
+        setFile(null);
         form.reset();
+
     }
 
     return (
@@ -57,11 +99,17 @@ const CertificateForm = ({ ...props }) => {
                             </FormItem>
                         )}
                     />
+                    <span className="w-full flex items-center justify-center text-lg relative before:absolute before:top-1/2 before:left-3 before:w-2/5 before:h-[2px] before:shadow-md before:-translate-y-1/2 before:bg-accent after:absolute after:top-1/2 after:right-3 after:w-2/5 after:h-[2px] after:shadow-md after:-translate-y-1/2 after:bg-accent">or</span>
+                    <div className="space-y-2 w-full">
+                        <Label htmlFor='excelFile' >Upload Excel File</Label>
+                        <Input ref={fileInputRef} accept=".xlsx" id="excelFile" type="file" onChange={handleFileChange} />
+                    </div>
+
                     <Button type="submit" className='mt-2 flex items-center gap-2'>
                         {
                             formState.loading ?
                                 <>
-                                    <Loader size={20} />
+                                    <Loader size={20} className="animate-spin" />
                                     Please wait...
                                 </>
                                 :
@@ -72,16 +120,12 @@ const CertificateForm = ({ ...props }) => {
                         }
                     </Button>
                     {
-                        formState?.url ?
-                            <Button asChild variant="outline">
-                                <a
-                                    href={formState.url}
-                                    download={`sih-mce-${formState.certificateData.name}`}
-                                    className={'flex gap-2 items-center'}
-                                >
+                        formState.downloadUrl ?
+                            <Button type="button" className='mt-2 flex items-center gap-2' variant="outline" onClick={() => { FileSaver.saveAs(formState.downloadUrl, 'MCE_SIH_Ceritficate') }}>
+                                <>
                                     <ArrowDownToLine size={20} />
                                     Download
-                                </a>
+                                </>
                             </Button >
                             :
                             ''

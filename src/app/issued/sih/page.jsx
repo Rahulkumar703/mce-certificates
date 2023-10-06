@@ -45,7 +45,8 @@ const SihPage = () => {
                             return <Card key={index}>
                                 <CardHeader>
                                     <CardTitle className='capitalize'>{data.studentName}</CardTitle>
-                                    <CardDescription className='capitalize'>{data.certificateNo}</CardDescription>
+                                    <CardDescription className='capitalize'><b>Certificate No.: </b>{data.certificateNo}</CardDescription>
+                                    <CardDescription className="text-primary font-semibold">{data.certificateCategory}</CardDescription>
                                 </CardHeader>
                                 <CardFooter className="justify-between gap-2 ">
                                     <Link href={''}>

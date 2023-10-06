@@ -1,26 +1,20 @@
+import JSZip from "jszip";
 import { PDFDocument, StandardFonts, fontkit, rgb } from "pdf-lib";
 
 export const genId = () => {
     return (new Date()).getTime();
 }
 
-export const generateSIHCertificate = async (data, id) => {
-
-    const name = data?.name;
-    if (!name) return null;
-
+const generateSinglePDF = async (data) => {
     const res = await fetch('/SIHTemplate.pdf');
-
     const pdfBuffer = await res.arrayBuffer();
 
     let pdfDoc = await PDFDocument.load(pdfBuffer)
-
     pdfDoc.registerFontkit(fontkit)
-
     const font = pdfDoc.embedStandardFont(StandardFonts.HelveticaBold);
     const idFont = pdfDoc.embedStandardFont(StandardFonts.TimesRoman);
-
     const pages = pdfDoc.getPages();
+    let { name, id } = data;
 
 
     pages[0].drawText(String(id), {
@@ -40,9 +34,6 @@ export const generateSIHCertificate = async (data, id) => {
         color: rgb(0, 0, 0)
     })
 
-    // const SPOC = 'Pratik Ranjan'
-    // const PRICIPAL = 'Abhay Kumar Jha'
-
     let width = font.widthOfTextAtSize(name.toUpperCase(), 30);
 
     pages[0].drawLine({
@@ -54,11 +45,37 @@ export const generateSIHCertificate = async (data, id) => {
     })
 
     const certificate = await pdfDoc.save();
-
     const bytes = new Uint8Array(certificate);
-    const blob = new Blob([bytes], { type: "application/pdf", });
 
-    let blobURL = URL.createObjectURL(blob);
+    const blob = new Blob([bytes], { type: "application/pdf" });
+
+    const blobURL = URL.createObjectURL(blob);
 
     return blobURL;
+}
+
+export const generateSIHCertificate = async (data) => {
+    const length = data.length;
+    if (!length) return null;
+
+    if (length === 1) {
+        return generateSinglePDF(data[0]);
+    } else {
+        const zip = new JSZip();
+
+        for (const d of data) {
+            const blobURL = await generateSinglePDF(d);
+
+            const response = await fetch(blobURL);
+            const pdfBlob = await response.blob();
+
+            zip.file(`MCE_SIH_${d.name}_${d.id}.pdf`, pdfBlob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+
+        const zipBlobURL = URL.createObjectURL(zipBlob);
+
+        return zipBlobURL;
+    }
 }

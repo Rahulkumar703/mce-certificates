@@ -19,7 +19,9 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "crypto": "^1.0.1",
+    "file-saver": "^2.0.5",
     "jose": "^4.15.2",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.284.0",
     "mongoose": "^7.5.3",
     "next": "13.5.4",
@@ -32,6 +34,7 @@
     "sonner": "^1.0.3",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "xlsx": "^0.18.5",
     "zod": "^3.22.3"
   },
   "devDependencies": {

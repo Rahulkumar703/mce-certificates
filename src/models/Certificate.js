@@ -11,10 +11,11 @@ const CertificateSchema = new mongoose.Schema({
         type: String,
         required: [true, "Certificate No. is required"],
         trim: true,
+        unique: true,
     },
     certificateCategory: {
         type: String,
-        required: [true, "Certificate No. is required"],
+        required: [true, "Certificate Category. is required"],
         trim: true,
     },
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });

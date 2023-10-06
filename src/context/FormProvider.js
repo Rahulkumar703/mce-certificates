@@ -6,8 +6,9 @@ import { FormContext } from "./Context"
 const FormProvider = ({ children }) => {
 
     const [formState, setFormState] = useState({
-        url: null,
-        certificateData: null
+        bolbUrl: null,
+        downloadUrl: null,
+        certificateData: []
     })
 
     return (

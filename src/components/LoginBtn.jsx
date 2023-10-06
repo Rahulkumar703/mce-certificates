@@ -16,7 +16,7 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 const LoginBtn = () => {
@@ -26,6 +26,7 @@ const LoginBtn = () => {
     const pathname = usePathname();
     const [loading, setLoading] = useState(false)
 
+    const router = useRouter();
 
     const logout = async () => {
         try {
@@ -37,10 +38,9 @@ const LoginBtn = () => {
 
             if (data.success) {
                 setUserState({ firstName: '', lastName: '', loggedIn: false, id: '' })
-                router.push('/');
+                router.refresh();
             }
             toast[data.type](data.message, { id: 'loggedOut' })
-            // form.reset();
 
         } catch (error) {
             toast.error(error.message, { id: 'logOutError' })
@@ -57,7 +57,7 @@ const LoginBtn = () => {
             <DropdownMenu className='right-2'>
                 <DropdownMenuTrigger asChild>
                     <Avatar>
-                        <AvatarImage src={`https://api.multiavatar.com/${userState.firstname}.svg`} />
+                        <AvatarImage src={`https://api.multiavatar.com/${userState.firstName}.svg`} />
                         <AvatarFallback className="uppercase">{`${userState.firstName?.at(0)}${userState.lastName?.at(0)}`}</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
