@@ -37,6 +37,7 @@ const LoginBtn = () => {
 
             if (data.success) {
                 setUserState({ firstName: '', lastName: '', loggedIn: false, id: '' })
+                router.push('/');
             }
             toast[data.type](data.message, { id: 'loggedOut' })
             // form.reset();
