@@ -19,18 +19,38 @@ const generateSinglePDF = async (data) => {
 
     pages[0].drawText(String(name).toUpperCase(), {
         x: 48,
-        y: 378,
+        y: 372,
         size: 25,
         font: boldFont,
         color: rgb(0, 0, 0)
     })
 
+    let width = boldFont.widthOfTextAtSize(String(name).toUpperCase(), 25);
+
+    pages[0].drawLine({
+        start: { x: 46, y: 367 },
+        end: { x: 50 + width, y: 367 },
+        thickness: 2.5,
+        color: rgb(0, 0, 0),
+        opacity: .85,
+    })
+
     pages[0].drawText(String(team).toUpperCase(), {
         x: 143,
-        y: 322,
+        y: 320,
         size: 18,
         font: boldFont,
         color: rgb(0, 0, 0),
+    })
+
+    width = boldFont.widthOfTextAtSize(String(team).toUpperCase(), 18);
+
+    pages[0].drawLine({
+        start: { x: 136, y: 315 },
+        end: { x: 150 + width, y: 315 },
+        thickness: 2.5,
+        color: rgb(0, 0, 0),
+        opacity: .85,
     })
 
     pages[0].drawText(String(`${id}`), {
