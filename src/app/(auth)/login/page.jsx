@@ -45,7 +45,6 @@ const LoginPage = () => {
 
     const onSubmit = async (formData) => {
 
-        console.log(formData);
 
         try {
 
@@ -61,9 +60,8 @@ const LoginPage = () => {
             const data = await res.json();
 
             if (data.success) {
-                console.log(data);
                 setUserState(prev => ({ ...prev, loggedIn: true, ...data.user }));
-                router.push('/');
+                router.push('/dashboard');
             }
 
             toast[data.type](data.message, { id: 'loggedIn' })
@@ -123,10 +121,10 @@ const LoginPage = () => {
                             Login
                         </Button>
                 }
-                <div className="pt-2 ml-auto flex items-center gap-2">
+                {/* <div className="pt-2 ml-auto flex items-center gap-2">
                     <label>not registered ?</label>
                     <Link href={'/signup'} className="text-blue-500 hover:underline">Create an Account</Link>
-                </div>
+                </div> */}
             </form>
         </Form>
     )

@@ -11,37 +11,35 @@ const generateSinglePDF = async (data) => {
 
     let pdfDoc = await PDFDocument.load(pdfBuffer)
     pdfDoc.registerFontkit(fontkit)
-    const font = pdfDoc.embedStandardFont(StandardFonts.HelveticaBold);
-    const idFont = pdfDoc.embedStandardFont(StandardFonts.TimesRoman);
+    const boldFont = pdfDoc.embedStandardFont(StandardFonts.TimesRomanBold);
     const pages = pdfDoc.getPages();
-    let { name, id } = data;
 
+    let { name, team, id } = data;
 
-    pages[0].drawText(String(id), {
-        x: 220,
-        y: 50.5,
-        size: 13,
-        font: idFont,
-        color: rgb(0, 0, 0),
-        opacity: 1
-    })
 
     pages[0].drawText(String(name).toUpperCase(), {
-        x: 50,
-        y: 342,
-        size: 30,
-        font: font,
+        x: 48,
+        y: 378,
+        size: 25,
+        font: boldFont,
         color: rgb(0, 0, 0)
     })
 
-    let width = font.widthOfTextAtSize(name.toUpperCase(), 30);
-
-    pages[0].drawLine({
-        start: { x: 48, y: 337 },
-        end: { x: 55 + width, y: 337 },
-        thickness: 2.5,
+    pages[0].drawText(String(team).toUpperCase(), {
+        x: 143,
+        y: 322,
+        size: 18,
+        font: boldFont,
         color: rgb(0, 0, 0),
-        opacity: .8,
+    })
+
+    pages[0].drawText(String(`${id}`), {
+        x: 145,
+        y: 59,
+        size: 13,
+        font: boldFont,
+        color: rgb(0, 0, 0),
+        opacity: 1
     })
 
     const certificate = await pdfDoc.save();
@@ -69,7 +67,7 @@ export const generateSIHCertificate = async (data) => {
             const response = await fetch(blobURL);
             const pdfBlob = await response.blob();
 
-            zip.file(`MCE_SIH_${d.name}_${d.id}.pdf`, pdfBlob);
+            zip.file(`MCE_SIH_${d.name}.pdf`, pdfBlob);
         }
 
         const zipBlob = await zip.generateAsync({ type: "blob" });

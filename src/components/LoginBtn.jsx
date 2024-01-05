@@ -65,11 +65,11 @@ const LoginBtn = () => {
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        {/* <DropdownMenuItem>
                             <Link href={'/profile'} className={`flex gap-2 items-center`} >
                                 Profile
                             </Link>
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                         <Link href={'/dashboard'}>
                             <DropdownMenuItem className={`flex gap-2 items-center`}>
                                 Dashboard

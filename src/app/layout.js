@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
           <main className='w-full max-w-[1200px] mx-auto flex flex-col min-h-[calc(100dvh-7.25rem)] p-2'>
             {children}
           </main>
-          <footer className='w-full max-w-[1200px] mx-auto flex items-center justify-center h-9 '>Made with ❤️ by MCEian</footer>
+          <footer className='w-full max-w-[1200px] mx-auto flex gap-1 items-center justify-center h-9 '>Made with ❤️ by <a className="text-primary hover:underline hover:text-primary/90" target='_blank' referrerPolicy='no-referrer' href="https://github.com/Rahulkumar703">Rahul</a></footer>
           <ToastContainer />
         </Provider>
       </body>

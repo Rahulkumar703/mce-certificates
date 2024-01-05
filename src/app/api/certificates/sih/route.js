@@ -10,28 +10,32 @@ export async function POST(req) {
 
         const reqBody = await req.json();
 
-        const res = await Certificate.findOne({ certificateCategory: { $regex: "^MCE/ISIH'23" } }, {}, { sort: { _id: -1 } });
+
+        const res = await Certificate.findOne({ certificateCategory: { $regex: "^MCE/I-SIH'23" } }, {}, { sort: { certificateNo: -1 } });
 
         const certificateNo = res?.certificateNo || 0;
 
-
         let insertingData = reqBody.map((body, index) => {
             return {
-                certificateNo: Number(certificateNo) + index + 1,
+                certificateNo: certificateNo + index + 1,
                 studentName: body.name,
-                certificateCategory: "MCE/ISIH'23",
+                teamName: body.team,
+                certificateCategory: "MCE/I-SIH'23",
             }
         })
 
         const insertedCertificate = await Certificate.insertMany(insertingData);
 
         let result = insertedCertificate.map((body, index) => {
+            const certificateNo = body.certificateNo < 10 ? `0${body.certificateNo}` : `${body.certificateNo}`
             return {
-                id: body.certificateNo,
+                id: `${body.certificateCategory}/${certificateNo}`,
                 name: body.studentName,
-                category: "MCE/ISIH'23",
+                team: body.teamName,
+                category: body.certificateCategory,
             }
         })
+
 
         return NextResponse.json(
             { message: 'Certificate generated successfully', type: "success", success: true, certificates: result },

@@ -1,8 +1,7 @@
 "use client"
 
 import { FormContext } from "@/context/Context"
-import { genId, generateSIHCertificate } from "@/lib/certificates";
-import FileSaver from "file-saver";
+import { generateSIHCertificate } from "@/lib/certificates";
 import { useContext, useEffect, useState } from "react"
 import { Document, Page } from "react-pdf";
 import { pdfjs } from 'react-pdf';
@@ -18,13 +17,13 @@ const GeneratedCertificate = ({ ...props }) => {
     const { formState, setFormState } = useContext(FormContext);
 
     useEffect(() => {
-
         async function generateCertificate() {
 
             try {
                 setFormState(prev => ({ ...prev, loading: true }))
 
                 const { certificateData } = formState;
+
 
                 const res = await fetch('/api/certificates/sih', {
                     method: "POST",
@@ -33,16 +32,15 @@ const GeneratedCertificate = ({ ...props }) => {
 
                 const data = await res.json();
 
-                toast[data.type](data.message, { message: 'generateCertificate' });
 
                 if (data.success) {
                     const url = await generateSIHCertificate(data.certificates);
 
                     setFormState(prev => ({ ...prev, blobUrl: certificateData.length === 1 ? url : null, downloadUrl: url }))
                 }
+                toast[data.type](data.message, { message: 'generateCertificate' });
 
             } catch (error) {
-                console.log(error);
                 toast.error(error.message, { message: 'generateCertificateError' });
             }
             finally {
@@ -50,6 +48,7 @@ const GeneratedCertificate = ({ ...props }) => {
             }
 
         }
+
         formState.certificateData.length && generateCertificate();
 
     }, [formState.certificateData])

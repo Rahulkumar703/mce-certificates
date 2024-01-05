@@ -98,8 +98,9 @@ const SignupPage = () => {
 
     return (
         <Form {...form} >
-            <form method="post" onSubmit={form.handleSubmit(onSubmit)} className="rounded-lg shadow-lg w-3/4 max-w-lg flex flex-col gap-2 bg-accent px-5 py-10">
-                <FormLabel>
+            <form method="post" onSubmit={form.handleSubmit(onSubmit)} className="rounded-lg shadow-lg w-3/4 max-w-lg flex flex-col items-center gap-2 bg-accent px-5 py-10">
+                <h1>Signups Not Allowed</h1>
+                {/* <FormLabel>
                     <h1 className="text-2xl mb-4 font-bold">Create an Account</h1>
                 </FormLabel>
                 <div className="flex gap-2 flex-1">
@@ -199,7 +200,7 @@ const SignupPage = () => {
                 <div className="pt-2 ml-auto flex items-center gap-2">
                     <label>already registered ?</label>
                     <Link href={'/login'} className="text-blue-500 hover:underline">Login</Link>
-                </div>
+                </div> */}
             </form>
         </Form>
     )
