@@ -55,7 +55,7 @@ export async function POST(req) {
 
 export async function GET(req) {
     try {
-        const certificates = await Certificate.find({ certificateCategory: { $regex: "^MCE/ISIH'23" } });
+        const certificates = await Certificate.find({ certificateCategory: { $regex: "^MCE/I-SIH'23" } });
 
         return NextResponse.json(
             { message: 'Certificate fetched successfully', type: "success", success: true, certificates: certificates },
